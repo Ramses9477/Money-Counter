@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Money Counter</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: 'Courier New', Courier, monospace;
+      text-align: center;
+      padding-top: 40px;
+    }
+    h1 {
+      color: #33ff99;
+    }
+    .counter {
+      font-size: 2.5em;
+      margin: 15px 0;
+    }
+    .label {
+      font-size: 1.2em;
+      color: #bbb;
+    }
+    .gain { color: #00ff88; }
+    .depense { color: #ff4040; }
+    .net { color: #ffd700; }
+    .button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 1em;
+      background: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>💸 Money Counter 💸</h1>
+
+  <div style="margin-bottom: 20px;">
+    <label for="currencySelector" style="font-size: 1.1em; color: #ccc;">Devise :</label>
+    <select id="currencySelector" onchange="changeCurrency()" style="padding: 5px; font-size: 1em;">
+      <option value="$">$ (Dollar)</option>
+      <option value="€">€ (Euro)</option>
+      <option value="£">£ (Livre Sterling)</option>
+      <option value="CFA">CFA</option>
+    </select>
+  </div>
+
+  <div class="label">Revenus en temps réel :</div>
+  <span id="revenu-val">0.0000</span> $<br><span id="revenu-converti" style="font-size: 0.5em; color: #888;"></span></div>
+
+  <div class="label">Dépenses en temps réel :</div>
+  <span id="depense-val">0.0000</span> $<br><span id="depense-converti" style="font-size: 0.5em; color: #888;"></span></div>
+
+  <div class="label">💰 Reste net :</div>
+  <span id="reste-val">0.0000</span> $<br><span id="reste-converti" style="font-size: 0.5em; color: #888;"></span></div>
+
+  <div style="margin-top: 30px;">
+    <h2 style="color: #fff; font-size: 1.3em;">🎯 Objectif mensuel : <input id="objectif" type="number" value="3000" style="width: 100px; padding: 5px; font-size: 1em;"> $</h2>
+    <div style="background: #444; width: 80%; max-width: 400px; height: 25px; margin: 10px auto; border-radius: 15px; overflow: hidden;">
+      <div id="barometre" style="height: 100%; width: 0%; background: linear-gradient(90deg, #00ff88, #33ff99); transition: width 0.5s;"></div>
+    </div>
+  </div>
+
+  <button onclick="toggleDetails()" class="button">📂 Voir les détails</button>
+<div id="details-zone" style="display:none; margin-top:20px; text-align:center;">
+<h2 style="color: #fff; font-size: 1.5em; margin-top: 30px;">Sources de revenus & dépenses</h2>
+<table style="font-size: 0.95em; color: #bbb; margin: 0 auto; border-collapse: collapse;">
+  <tr style="color:#33ff99"><th colspan="3">XVIDEOS</th></tr>
+  <tr><td style="padding:4px 10px; text-align:left;">Afrosexxx (Big Ass)</td><td>3000 vidéos</td><td>500 $/mois</td></tr>
+  <tr><td style="padding:4px 10px; text-align:left;">Elvie Slutty (Big Ass)</td><td>2200 vidéos</td><td>200 $/mois</td></tr>
+  <tr><td style="padding:4px 10px; text-align:left;">Bigassdoll (Sex Doll)</td><td>350 vidéos</td><td>50 $/mois</td></tr>
+  <tr><td style="padding:4px 10px; text-align:left;">Black Porn Festival (Skinny Girl)</td><td>110 vidéos</td><td>1000 $/mois ✅ <a href="https://fr.xvideos.com/black_porn_festival_official" target="_blank" style="color:#33ff99;">Lien</a></td></tr>
+
+  <tr style="color:#33ff99"><th colspan="3">Clips4Sale & Manyvids</th></tr>
+  <tr><td style="padding:4px 10px; text-align:left;">Afrosexxx</td><td>161 vidéos</td><td>250 $/mois</td></tr>
+  <tr><td style="padding:4px 10px; text-align:left;">Hipsyflower</td><td>—</td><td>50 $/mois</td></tr>
+
+  <tr style="color:#33ff99"><th colspan="3">Autres</th></tr>
+  <tr><td style="padding:4px 10px; text-align:left;">Site personnel (afrosexxx.com)</td><td>Coût : 60 $</td><td>Revenu : 60 $/mois</td></tr>
+  <tr><td style="padding:4px 10px; text-align:left;">RSA</td><td>—</td><td>500 $/mois</td></tr>
+</table>
+</div>
+<script>
+  const conversionRates = { '$': 1, '€': 0.93, '£': 0.80, 'CFA': 655 };
+  function toggleDetails() {
+    const el = document.getElementById('details-zone');
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+function formatWithSmallDecimals(value) {
+  const currency = window.selectedCurrency || '$';
+  const [main, decimals] = value.split(".");
+  return `${main}.<span style='font-size: 0.5em;'>${decimals}</span> ${currency}`;
+}
+
+function changeCurrency() {
+  window.selectedCurrency = document.getElementById('currencySelector').value;
+}
+
+window.selectedCurrency = '$';
+</script>
+
+<input id="newLabel" placeholder="Nom" style="margin:5px;padding:5px;">
+<input id="newAmount" placeholder="Montant ($)" type="number" step="0.01" style="margin:5px;padding:5px;">
+<select id="type">
+  <option value="income">➕ Revenu</option>
+  <option value="expense">➖ Dépense</option>
+</select>
+<select id="initial">
+  <option value="false">Ajout normal</option>
+  <option value="true">💼 Initial income</option>
+</select>
+<button onclick="addCustomEntry()" class="button">➕ Ajouter</button>
+<button onclick="resetCounter()" class="button">🔄 Réinitialiser</button>
+
+<div id="custom-log" style="margin-top:40px; text-align:left; padding: 0 20px;"></div>
+
+<button onclick="showProjection()" class="button">📊 Voir projection</button>
+<div id="projection-zone" style="margin-top: 20px; font-size: 0.9em; color: #ccc;"></div>
+
+<script>
+  function addCustomEntry() {
+    const label = document.getElementById('newLabel').value;
+    const amount = parseFloat(document.getElementById('newAmount').value);
+    const type = document.getElementById('type').value;
+    const now = new Date();
+    const timestamp = now.toLocaleString('fr-FR');
+
+    if (!isNaN(amount)) {
+      const logContainer = document.getElementById("custom-log");
+      const entry = document.createElement("div");
+      entry.style.margin = "5px 0";
+      entry.innerHTML = `📝 <strong>${label}</strong> — ${type === 'income' ? '+' : '-'}${amount.toFixed(4)} $ à ${timestamp}`;
+
+      if (type === "income") {
+        if (document.getElementById('initial').value === 'true') {
+          entry.style.fontStyle = 'italic';
+          entry.innerHTML = `📝 <strong>${label}</strong> — Initial +${amount.toFixed(4)} $ à ${timestamp}`;
+          const convertedAmount = amount * conversionRates[window.selectedCurrency || '$'];
+          const resteElem = document.getElementById("reste-val");
+          const resteConvElem = document.getElementById("reste-converti");
+          const netTemp = (totalRevenu - totalDepense + amount);
+          resteElem.innerText = (netTemp * rate).toFixed(4);
+          resteConvElem.innerText = `~${(netTemp * rate).toFixed(2)} ${window.selectedCurrency}`;
+        } else {
+          totalRevenu += amount;
+        }
+        entry.style.color = '#00ff88';
+      } else {
+        totalDepense += amount;
+        entry.style.color = '#ff4040';
+      }
+
+      logContainer.prepend(entry);
+    }
+  }
+
+  function resetCounter() {
+    if (confirm("Es-tu sûr de vouloir tout réinitialiser ?")) {
+      totalRevenu = 0;
+      totalDepense = 0;
+      localStorage.setItem('totalRevenu', 0);
+      localStorage.setItem('totalDepense', 0);
+      document.getElementById("revenu-val").innerText = "0.0000";
+      document.getElementById("depense-val").innerText = "0.0000";
+      document.getElementById("reste-val").innerText = "0.0000";
+      document.getElementById("revenu-converti").innerText = "";
+      document.getElementById("depense-converti").innerText = "";
+      document.getElementById("reste-converti").innerText = "";
+      document.getElementById("barometre").style.width = "0%";
+    }
+  }
+const secondesDansMois = 30 * 24 * 60 * 60;
+
+  const revenuAfrosexxxXV = 500 / secondesDansMois;
+  const revenuElvieSlutty = 200 / secondesDansMois;
+  const revenuBigassdoll = 50 / secondesDansMois;
+  const revenuBlackPornFestival = 1000 / secondesDansMois;
+  const revenuC4SAfrosexxx = 250 / secondesDansMois;
+  const revenuC4SHipsyflower = 50 / secondesDansMois;
+  const revenuSite = 60 / secondesDansMois;
+  const revenuRSA = 500 / secondesDansMois;
+
+  const revenuParSeconde = revenuAfrosexxxXV + revenuElvieSlutty + revenuBigassdoll + revenuBlackPornFestival + revenuC4SAfrosexxx + revenuC4SHipsyflower + revenuSite + revenuRSA;
+
+  const depenseMensuelle = 1000;
+  const depenseParSeconde = depenseMensuelle / secondesDansMois;
+
+  let totalRevenu = parseFloat(localStorage.getItem('totalRevenu')) || 0;
+  let totalDepense = parseFloat(localStorage.getItem('totalDepense')) || 0;
+
+  function updateMoney() {
+    const conversionRates = { '$': 1, '€': 0.93, '£': 0.80, 'CFA': 655 };
+    const selected = window.selectedCurrency || '$';
+    const rate = conversionRates[selected];
+    const objectif = parseFloat(document.getElementById('objectif').value) || 3000;
+    totalRevenu += revenuParSeconde;
+    totalDepense += depenseParSeconde;
+
+    const net = totalRevenu - totalDepense;
+
+    document.getElementById("revenu-val").innerText = (totalRevenu * rate).toFixed(4);
+    document.getElementById("revenu-converti").innerText = `~${(totalRevenu * rate).toFixed(2)} ${selected}`;
+    document.getElementById("depense-val").innerText = (totalDepense * rate).toFixed(4);
+    document.getElementById("depense-converti").innerText = `~${(totalDepense * rate).toFixed(2)} ${selected}`;
+    document.getElementById("reste-val").innerText = (net * rate).toFixed(4);
+    document.getElementById("reste-converti").innerText = `~${(net * rate).toFixed(2)} ${selected}`;
+    const progress = Math.min(100, (totalRevenu / objectif) * 100).toFixed(2);
+    document.getElementById("barometre").style.width = progress + "%";
+  }
+
+  setInterval(updateMoney, 1000);
+function showProjection() {
+  const conversionRates = { '$': 1, '€': 0.93, '£': 0.80, 'CFA': 655 };
+  const selected = window.selectedCurrency || '$';
+  const rate = conversionRates[selected];
+
+  const periods = {
+    '24h': 86400,
+    '1 semaine': 86400 * 7,
+    '1 mois': 86400 * 30,
+    '1 an': 86400 * 365,
+    '3 ans': 86400 * 365 * 3
+  };
+
+  let html = '<h2 style="color: #fff; font-size: 1.2em; margin-bottom: 10px;">📈 Projection</h2>';
+  html += '<table style="margin: 0 auto; text-align: left; border-collapse: collapse;">';
+  html += '<tr><th style="padding: 4px 10px;">Période</th><th style="padding: 4px 10px;">Revenus</th><th style="padding: 4px 10px;">Dépenses</th><th style="padding: 4px 10px;">Reste</th></tr>';
+
+  for (const [label, seconds] of Object.entries(periods)) {
+    const revenuProj = (revenuParSeconde * seconds) * rate;
+    const depenseProj = (depenseParSeconde * seconds) * rate;
+    const netProj = revenuProj - depenseProj;
+
+    html += `<tr>
+      <td style="padding: 4px 10px;">${label}</td>
+      <td style="padding: 4px 10px;">${revenuProj.toFixed(2)} ${selected}</td>
+      <td style="padding: 4px 10px;">${depenseProj.toFixed(2)} ${selected}</td>
+      <td style="padding: 4px 10px;">${netProj.toFixed(2)} ${selected}</td>
+    </tr>`;
+  }
+
+  html += '</table>';
+  document.getElementById("projection-zone").innerHTML = html;
+}
+
+</script>
+</body>
+</html>
